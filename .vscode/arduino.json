@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:micro",
+    "port": "COM5",
+    "programmer": "USBtinyISP",
+    "sketch": "src\\atc-firmware.ino"
+}

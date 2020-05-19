@@ -1,2 +1,2 @@
-# mmc-atc-firmware
-Firmware for the Myers Mill Craft Tormach Compatible ATC
+# MMC Tormach Compatible ATC
+Firmware for the MMC Tormach Compatible ATC
