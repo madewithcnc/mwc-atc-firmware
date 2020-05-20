@@ -1,10 +1,10 @@
-#ifndef ATC_Commands_h
-#define ATC_Commands_h
+#ifndef Tormach_ATC_Commands_h
+#define Tormach_ATC_Commands_h
 
 // Commands 
 //
 //
-namespace ATC_commands {
+namespace Tormach_ATC_commands {
     static constexpr char VERSION[]             = "VE";
     static constexpr char VERSION_LONG[]        = "VL";
     
@@ -34,4 +34,4 @@ namespace ATC_commands {
     static constexpr char PROFILE_VFD_BT30[]    = "bt30";
 }
 
-#endif /* ATC_Commands_h */
+#endif /* Tormach_ATC_Commands_h */
