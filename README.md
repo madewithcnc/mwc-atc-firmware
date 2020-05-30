@@ -1,2 +1,2 @@
-# MMC Tormach Compatible ATC
-Firmware for the MMC Tormach Compatible ATC
+# MWC Tormach Compatible ATC
+Firmware for the MWC Tormach Compatible ATC
