@@ -8,6 +8,10 @@ class ATC
    
     public:
         ATC();
+        void init();
+        void processSerial();
+        
+    private:
         void procesCommand (char* data);
 }; 
 

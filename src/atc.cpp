@@ -7,6 +7,10 @@
 
 
 namespace {
+    static constexpr char TERMINATOR            = '\r'; // weird line ending, *nix typically uses \n and windows \r\n
+    static constexpr char NEW_LINE              = '\n';
+    static constexpr uint8_t MAX_COMMAND_LENGTH = 50;
+
     // 770M and 1100M machines use an internal HAL pin to detect VFD motion
     // Path Pilot will tell us we are LEVEL, however internally it treats us as NONE
     enum class VDF_modes { Level, Pulse, None };
@@ -26,7 +30,49 @@ namespace {
 
 ATC::ATC()
 {
+  
+}
 
+void ATC::init() 
+{
+  // GPIO Serial Communications
+  //Serial1.begin(57600);
+
+  // Built in Serial to USB Communications
+  Serial.begin(115200);
+}
+
+void ATC::processSerial()
+{
+  static char buffer[MAX_COMMAND_LENGTH + 1];
+  static unsigned int buffer_position = 0;
+
+  while (Serial.available() > 0) {
+    char data = Serial.read();
+
+    switch (data) {
+      // if we get a newline ignore it
+      case NEW_LINE:
+        break;
+
+      case TERMINATOR:
+        // terminate string  
+        buffer[buffer_position] = 0;  
+        // reset buffer position for next command
+        buffer_position = 0; 
+        procesCommand(buffer); 
+        break;
+
+      default:
+        if (buffer_position < MAX_COMMAND_LENGTH) {
+          buffer[buffer_position++] = data;
+          break;
+        }
+        // we reached a max command length, must be bad data, reset
+        buffer_position = 0;
+        break;
+    }
+  }
 }
 
 void ATC::procesCommand(char* data)
