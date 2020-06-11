@@ -18,7 +18,8 @@
             "defines": [
                 "AVR_NANO_EVERY",
                 "__AVR_ATmega4809__=1",
-                "__AVR__"
+                "__AVR__",
+                "USBCON=1"
             ],
             "forcedInclude": [
                 "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"
