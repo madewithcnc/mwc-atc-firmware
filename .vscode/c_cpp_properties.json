@@ -1,9 +1,7 @@
-//"${env:HOMEPATH}\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.6.23\\**",
-//"${env:HOMEPATH}\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\**",
 {
     "configurations": [
         {
-            "name": "Arduino AVR - Micro",
+            "name": "Arduino AVR - Nano Every",
             "includePath": [
                 "${workspaceFolder}\\**",
                 "${env:HOMEPATH}\\Documents\\Arduino\\libraries\\**",
@@ -12,24 +10,33 @@
                 "C:\\Program Files (x86)\\Arduino\\hardware\\tools\\avr\\lib\\gcc\\avr\\**",
                 "C:\\Program Files (x86)\\Arduino\\hardware\\tools\\avr\\avr\\include\\**",
                 "C:\\Program Files (x86)\\Arduino\\libraries\\**",
-                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\variants\\micro",
-                "C:\\Users\\panda\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.2\\**",
-                "C:\\Users\\panda\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\**"
+                "${env:HOMEPATH}\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\**",
+                "${env:HOMEPATH}\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\megaavr\\1.8.6\\cores\\arduino\\**",
+                "${env:HOMEPATH}\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\megaavr\\1.8.6\\libraries\\**",
+                "${env:HOMEPATH}\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\megaavr\\1.8.6\\variants\\nona4809\\**"
             ],
             "defines": [
-                "ARDUINO_AVR_MICRO",
-                "__AVR_ATmega32U4__=1",
-                "ARDUINO=101",
+                "AVR_NANO_EVERY",
+                "__AVR_ATmega4809__=1",
                 "__AVR__"
             ],
             "forcedInclude": [
-                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h",
-                "C:\\Users\\panda\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\avr\\1.8.2\\cores\\arduino\\Arduino.h"
+                "C:\\Program Files (x86)\\Arduino\\hardware\\arduino\\avr\\cores\\arduino\\Arduino.h"
             ],
             "intelliSenseMode": "gcc-x64",
             "compilerPath": "C:\\Program Files (x86)\\Arduino\\hardware\\tools\\avr\\bin\\avr-g++.exe",
             "cStandard": "c11",
             "cppStandard": "c++11"
+        },
+        {
+            "name": "Win32",
+            "includePath": [
+                "${env:HOMEPATH}\\AppData\\Local\\Arduino15\\packages\\arduino\\tools\\**",
+                "${env:HOMEPATH}\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\megaavr\\1.8.6\\**"
+            ],
+            "forcedInclude": [
+                "${env:HOMEPATH}\\AppData\\Local\\Arduino15\\packages\\arduino\\hardware\\megaavr\\1.8.6\\cores\\arduino\\Arduino.h"
+            ]
         }
     ],
     "version": 4
