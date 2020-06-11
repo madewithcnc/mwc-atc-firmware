@@ -1,6 +1,7 @@
 {
-    "board": "arduino:avr:micro",
-    "port": "COM5",
-    "programmer": "USBtinyISP",
-    "sketch": "src\\atc-firmware.ino"
+    "board": "arduino:megaavr:nona4809",
+    "port": "COM4",
+    "programmer": "AVRISP mkII",
+    "sketch": "src\\atc-firmware.ino",
+    "configuration": "mode=off"
 }
