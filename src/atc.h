@@ -12,7 +12,7 @@ class ATC
         void processSerial();
         
     private:
-        void procesCommand (char* data);
+        void processCommand(char* data);
 }; 
 
 #endif /* ATC_h */

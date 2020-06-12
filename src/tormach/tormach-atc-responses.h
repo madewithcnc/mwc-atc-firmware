@@ -1,7 +1,7 @@
-#ifndef ATC_Responses_h
-#define ATC_Responses_h
+#ifndef Tormach_ATC_Responses_h
+#define Tormach_ATC_Responses_h
 
-namespace ATC_responses {
+namespace Tormach_ATC_responses {
     // Responses
     static constexpr char OK[]               = "."; 
     static constexpr char ON[]               = "+"; 
@@ -10,4 +10,4 @@ namespace ATC_responses {
     static constexpr char UNKNOWN[]          = "?";
 }
 
-#endif /* ATC_Responses_h */
+#endif /* Tormach_ATC_Responses_h */

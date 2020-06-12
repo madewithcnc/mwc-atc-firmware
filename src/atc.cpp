@@ -1,9 +1,12 @@
 #include <avr/pgmspace.h>
 #include "atc.h"
 #include "tormach/tormach-atc-commands.h"
-#include "atc-responses.h"
+#include "tormach/tormach-atc-responses.h"
 #include "pressure-sensor.h"
 #include "solenoid.h"
+
+namespace ATC_commands = Tormach_ATC_commands;
+namespace ATC_responses = Tormach_ATC_responses;
 
 
 namespace {
@@ -28,9 +31,13 @@ namespace {
     Solenoid _airBlast(5);  // Pin D5
 }
 
+// Use an internal reference to Serial
+// This makes it easier to switch between software serial for dev and hardware serial
+auto ATC_Serial = Serial;
+
 ATC::ATC()
 {
-  
+
 }
 
 void ATC::init() 
@@ -39,7 +46,7 @@ void ATC::init()
   //Serial1.begin(57600);
 
   // Built in Serial to USB Communications
-  Serial.begin(115200);
+  ATC_Serial.begin(115200);
 }
 
 void ATC::processSerial()
@@ -47,8 +54,8 @@ void ATC::processSerial()
   static char buffer[MAX_COMMAND_LENGTH + 1];
   static unsigned int buffer_position = 0;
 
-  while (Serial.available() > 0) {
-    char data = Serial.read();
+  while (ATC_Serial.available() > 0) {
+    char data = ATC_Serial.read();
 
     switch (data) {
       // if we get a newline ignore it
@@ -60,7 +67,7 @@ void ATC::processSerial()
         buffer[buffer_position] = 0;  
         // reset buffer position for next command
         buffer_position = 0; 
-        procesCommand(buffer); 
+        processCommand(buffer); 
         break;
 
       default:
@@ -75,79 +82,79 @@ void ATC::processSerial()
   }
 }
 
-void ATC::procesCommand(char* data)
+void ATC::processCommand(char* data)
 {   
     char output_buffer[100];
     // check for status first since it is likely to be the most used command
-    if (strcmp(data, Tormach_ATC_commands::STATUS) == 0) {
+    if (strcmp(data, ATC_commands::STATUS) == 0) {
         // check the current PSI
         int psi = _pressureSensor.getPsi();
         int data_size = snprintf(output_buffer, sizeof output_buffer, 
                                     "P%s C%s V%s D%s\r\n", 
-                                    psi < MIN_PSI ? ATC_responses::ON : ATC_responses::OFF,
+                                    psi < MIN_PSI ? Tormach_ATC_responses::ON : ATC_responses::OFF,
                                     ATC_responses::OFF, // TODO: Sensor for tray in
                                     ATC_responses::OFF, // Path Pilot ignores our VFD sensor value
                                     _powerDrawBar.getState() == Solenoid::States::On ? ATC_responses::ON : ATC_responses::OFF);
 
-        Serial.write(output_buffer, data_size);
-    } else if (strcmp(data, Tormach_ATC_commands::PDB_ACTIVATE) == 0) {
-        //Serial.print("PDB Open"); // debug statement
+        ATC_Serial.write(output_buffer, data_size);
+    } else if (strcmp(data, ATC_commands::PDB_ACTIVATE) == 0) {
+        //ATC_Serial.print("PDB Open"); // debug statement
         _powerDrawBar.open();
-        Serial.println(ATC_responses::OK); 
+        ATC_Serial.println(ATC_responses::OK); 
 
-    } else if (strcmp(data, Tormach_ATC_commands::PDB_DEACTIVATE) == 0) {
-        // Serial.print("PDB Closed");  // debug statement
+    } else if (strcmp(data, ATC_commands::PDB_DEACTIVATE) == 0) {
+        // ATC_Serial.print("PDB Closed");  // debug statement
         _powerDrawBar.close();
-        Serial.println(ATC_responses::OK); 
+        ATC_Serial.println(ATC_responses::OK); 
 
-    } else if (strcmp(data, Tormach_ATC_commands::TRAY_IN) == 0) {
-        // Serial.print("Tray In"); // debug statement
-        Serial.println(ATC_responses::OK); 
+    } else if (strcmp(data, ATC_commands::TRAY_IN) == 0) {
+        // ATC_Serial.print("Tray In"); // debug statement
+        ATC_Serial.println(ATC_responses::OK); 
 
-    } else if (strcmp(data, Tormach_ATC_commands::TRAY_OUT) == 0) {
-        // Serial.print("Tray Out"); // debug statement
-        Serial.println(ATC_responses::OK); 
+    } else if (strcmp(data, ATC_commands::TRAY_OUT) == 0) {
+        // ATC_Serial.print("Tray Out"); // debug statement
+        ATC_Serial.println(ATC_responses::OK); 
 
-    } else if (strcmp(data, Tormach_ATC_commands::BLAST_ON) == 0) {
-        // Serial.print("Blast On"); // debug statement
-        Serial.println(ATC_responses::OK); 
+    } else if (strcmp(data, ATC_commands::BLAST_ON) == 0) {
+        // ATC_Serial.print("Blast On"); // debug statement
+        ATC_Serial.println(ATC_responses::OK); 
 
-    } else if (strcmp(data, Tormach_ATC_commands::BLAST_OFF) == 0) {
-        // Serial.print("Blast Off"); // debug statement
-        Serial.println(ATC_responses::OK); 
+    } else if (strcmp(data, ATC_commands::BLAST_OFF) == 0) {
+        // ATC_Serial.print("Blast Off"); // debug statement
+        ATC_Serial.println(ATC_responses::OK); 
 
-    } else if (strstr(data, Tormach_ATC_commands::INDEX_TRAY) != NULL
-                && (int)strstr(data, Tormach_ATC_commands::INDEX_TRAY) - (int)data == 0) {
+    } else if (strstr(data, ATC_commands::INDEX_TRAY) != NULL
+                && (int)strstr(data, ATC_commands::INDEX_TRAY) - (int)data == 0) {
         // Make sure the command starts with T, do not want to confuse it with somethng that has BT30 in the command                    
         int trayToIndex = atoi(data + 1);
-        Serial.println(trayToIndex);
+        ATC_Serial.println(trayToIndex);
 
-    } else if (strcmp(data, Tormach_ATC_commands::FIND_HOME) == 0) {
-        // Serial.print("Home the tray"); // debug statement
-        Serial.println(ATC_responses::OK); 
+    } else if (strcmp(data, ATC_commands::FIND_HOME) == 0) {
+        // ATC_Serial.print("Home the tray"); // debug statement
+        ATC_Serial.println(ATC_responses::OK); 
 
-    } else if (strcmp(data, Tormach_ATC_commands::OFFSET_UP) == 0) {
-        // Serial.print("Increment tray index up"); // debug statement
-        Serial.println(ATC_responses::OK); 
+    } else if (strcmp(data, ATC_commands::OFFSET_UP) == 0) {
+        // ATC_Serial.print("Increment tray index up"); // debug statement
+        ATC_Serial.println(ATC_responses::OK); 
 
-    } else if (strcmp(data, Tormach_ATC_commands::OFFSET_DOWN) == 0) {
-        // Serial.print("Increment tray index down"); // debug statement
-        Serial.println(ATC_responses::OK); 
+    } else if (strcmp(data, ATC_commands::OFFSET_DOWN) == 0) {
+        // ATC_Serial.print("Increment tray index down"); // debug statement
+        ATC_Serial.println(ATC_responses::OK); 
 
-    } else if (strcmp(data, Tormach_ATC_commands::VERSION) == 0 || strcmp(data, Tormach_ATC_commands::VERSION_LONG) == 0 ) {
+    } else if (strcmp(data, ATC_commands::VERSION) == 0 || strcmp(data, ATC_commands::VERSION_LONG) == 0 ) {
         int data_size = snprintf(output_buffer, sizeof output_buffer, 
-                                    "Not A Z-Bot Automatic Tool Changer II MMC-1.0 TOOLS:%u %s %s\r\n", 
+                                    "Not A Z-Bot Automatic Tool Changer II MWC-1.0 TOOLS:%u %s %s\r\n", 
                                     _maxTools,
                                     _vfdMode == VDF_modes::Level ? "LEVEL" : "PULSE", 
                                     _spindleType == Spindle_types::BT30 ? "BT30" : "" );
 
-        Serial.write(output_buffer, data_size);
+        ATC_Serial.write(output_buffer, data_size);
 
-    } else if (strstr(data, Tormach_ATC_commands::PROFILE_IDENTIFIER) != NULL) {
-        // Serial.print("New Profile"); // debug statement
+    } else if (strstr(data, ATC_commands::PROFILE_IDENTIFIER) != NULL) {
+        // ATC_Serial.print("New Profile"); // debug statement
 
         // if the profile does not have bt30 in it, default to TTS spindle type
-        if (strstr(data, Tormach_ATC_commands::PROFILE_VFD_BT30) == NULL) {
+        if (strstr(data, ATC_commands::PROFILE_VFD_BT30) == NULL) {
             if (_spindleType != Spindle_types::TTS) {
                 _spindleType = Spindle_types::TTS;
             }
@@ -159,17 +166,17 @@ void ATC::procesCommand(char* data)
             if (profileTools != 0) {
                 _maxTools = profileTools;
 
-            } else if (strcmp(token, Tormach_ATC_commands::PROFILE_VFD_LEVEL) == 0) {
+            } else if (strcmp(token, ATC_commands::PROFILE_VFD_LEVEL) == 0) {
                 if (_vfdMode != VDF_modes::Level) {
                     _vfdMode = VDF_modes::Level;
                 }
 
-            } else if (strcmp(token, Tormach_ATC_commands::PROFILE_VFD_PULSE) == 0) {
+            } else if (strcmp(token, ATC_commands::PROFILE_VFD_PULSE) == 0) {
                 if (_vfdMode != VDF_modes::Pulse) {
                     _vfdMode = VDF_modes::Pulse;
                 }
 
-            } else if (strcmp(token, Tormach_ATC_commands::PROFILE_VFD_BT30) == 0) {
+            } else if (strcmp(token, ATC_commands::PROFILE_VFD_BT30) == 0) {
                 if (_spindleType != Spindle_types::BT30) {
                     _spindleType = Spindle_types::BT30;
                 }
@@ -180,6 +187,6 @@ void ATC::procesCommand(char* data)
         //TODO: write profile to EEPROM
     } else {
         // We received a command we do not know how to process
-        Serial.println(ATC_responses::UNKNOWN);
+        ATC_Serial.println(ATC_responses::UNKNOWN);
     }
 }
